@@ -769,7 +769,6 @@ void BindAscendGraph(py::module *m) {
       .def("get_dynamic_subgraph_builder", &Operator::GetDynamicSubgraphBuilder)
       .def("get_dynamic_subgraph", &Operator::GetDynamicSubgraph);
 #endif
-
   py::class_<Tensor>(*m, "GETensor")
       .def(py::init<>())
       .def(py::init<const TensorDesc &>())
@@ -807,7 +806,7 @@ void BindAscendGraph(py::module *m) {
       .def("get_size", &Tensor::GetSize)
       .def("is_valid", &Tensor::IsValid)
       .def("clone", &Tensor::Clone);
-
+  
   py::class_<TensorDesc>(*m, "GETensorDesc")
       .def(py::init<>())
       .def(py::init<Shape, Format, DataType>(), py::arg("shape"),

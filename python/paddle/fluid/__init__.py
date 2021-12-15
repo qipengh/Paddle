@@ -70,7 +70,7 @@ from .input import embedding, one_hot
 from . import distribute_lookup_table
 from .param_attr import ParamAttr, WeightNormParamAttr
 from .data_feeder import DataFeeder
-from .core import LoDTensor, LoDTensorArray, Scope, _Scope
+from .core import Tensor, LoDTensorArray, Scope, _Scope
 from .core import CPUPlace, XPUPlace, CUDAPlace, CUDAPinnedPlace, NPUPlace, IPUPlace
 from .incubate import fleet
 from .transpiler import DistributeTranspiler, \
@@ -99,7 +99,7 @@ from .trainer_desc import TrainerDesc, DistMultiTrainer, PipelineTrainer, HeterP
 from .transpiler import HashName, RoundRobin
 from .backward import append_backward
 
-Tensor = LoDTensor
+Tensor = Tensor
 enable_imperative = enable_dygraph
 disable_imperative = disable_dygraph
 
@@ -125,7 +125,7 @@ __all__ = framework.__all__ + executor.__all__ + \
         'optimizer',
         'backward',
         'regularizer',
-        'LoDTensor',
+        'Tensor',
         'LoDTensorArray',
         'CPUPlace',
         'XPUPlace',
