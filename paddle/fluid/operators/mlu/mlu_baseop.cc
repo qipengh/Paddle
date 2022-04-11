@@ -44,6 +44,15 @@ bool MLUSupportsCast(const VT::Type& src_type, const VT::Type& dst_type) {
   return false;
 }
 
+inline cnnlReduceOp_t GetMLUCnnlReduceOp(const std::string& reduce_name) {
+  auto iter = MLUReduceOpMap.find(reduce_name);
+  if (iter != MLUReduceOpMap.end()) {
+    return iter->second;
+  }
+  PADDLE_THROW(platform::errors::InvalidArgument(
+      "Not support reduce op type of MLU Device: %s", reduce_name));
+}
+
 class MLUCnnlTensorDescPool {
  public:
   cnnlTensorDescriptor_t Pop() {
