@@ -21,7 +21,7 @@ template <typename T>
 class ReduceSumMLUKernel : public framework::OpKernel<T> {
  public:
   void Compute(const framework::ExecutionContext& context) const override {
-    MLUReduce<T>(context, "reduce_sum");
+    MLUReduceOp<T>(context, "reduce_sum");
   }
 };
 

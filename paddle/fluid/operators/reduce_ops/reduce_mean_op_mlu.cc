@@ -21,7 +21,7 @@ template <typename T>
 class ReduceMeanMLUKernel : public framework::OpKernel<T> {
  public:
   void Compute(const framework::ExecutionContext& context) const override {
-    MLUReduce<T>(context, "reduce_mean");
+    MLUReduceOp<T>(context, "reduce_mean");
   }
 };
 

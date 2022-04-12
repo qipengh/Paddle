@@ -119,7 +119,7 @@ class ElementwiseDivGradMLUKernel : public framework::OpKernel<T> {
                         nullptr, dout_desc.get(), GetBasePtr(&dy_temp), 0,
                         nullptr, nullptr, dy_desc.get(), GetBasePtr(dy));
       } else {
-        dx->ShareDataWith(dy_temp);
+        dy->ShareDataWith(dy_temp);
       }
     }
 

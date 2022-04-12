@@ -24,8 +24,8 @@ namespace paddle {
 namespace operators {
 
 template <typename T>
-void MLUReduce(const framework::ExecutionContext& context,
-               const std::string reduce_name) {
+void MLUReduceOp(const framework::ExecutionContext& context,
+                 std::string reduce_name) {
   PADDLE_ENFORCE_EQ(
       platform::is_mlu_place(context.GetPlace()), true,
       platform::errors::Unavailable("This kernel only runs on MLU."));

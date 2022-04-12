@@ -229,15 +229,14 @@ void MLUUnaryOp(const framework::ExecutionContext& ctx) {
   auto* x = ctx.Input<Tensor>("X");
   auto* out = ctx.Output<Tensor>("Out");
 
-  out->mutable_data<T>(ctx.GetPlace());
+  out->mutable_data<Tout>(ctx.GetPlace());
 
-  MLUCnnlTensorDesc input_desc(input, CNNL_LAYOUT_ARRAY, ToCnnlDataType<Tin>());
-  MLUCnnlTensorDesc output_desc(*output, CNNL_LAYOUT_ARRAY,
-                                ToCnnlDataType<Tout>());
+  MLUCnnlTensorDesc x_desc(x, CNNL_LAYOUT_ARRAY, ToCnnlDataType<Tin>());
+  MLUCnnlTensorDesc out_desc(*out, CNNL_LAYOUT_ARRAY, ToCnnlDataType<Tout>());
 
   cnnlComputationPreference_t prefer_type = CNNL_COMPUTATION_HIGH_PRECISION;
-  MLUUnary<Functor>(ctx, prefer_type, input_desc.get(), GetBasePtr(&input),
-                    output_desc.get(), GetBasePtr(output));
+  MLUUnary<Functor>(ctx, prefer_type, x_desc.get(), GetBasePtr(x),
+                    out_desc.get(), GetBasePtr(out));
 }
 
 }  // namespace operators
