@@ -27,8 +27,6 @@ class FillAnyLikeMLUKernel : public framework::OpKernel<T> {
                                 float, T>::type>::type;
 
   void Compute(const framework::ExecutionContext& ctx) const override {
-    auto data_type =
-        static_cast<framework::proto::VarType::Type>(ctx.Attr<int>("dtype"));
     auto* out = ctx.Output<framework::Tensor>("Out");
     out->mutable_data<T>(ctx.GetPlace());
 
@@ -55,8 +53,7 @@ class FillAnyLikeMLUKernel : public framework::OpKernel<T> {
         platform::errors::InvalidArgument("The filled value is NaN."));
 
     auto value_t = static_cast<T>(value);
-    MLUCnnlTensorDesc out_desc(*out, CNNL_LAYOUT_ARRAY,
-                               ToCnnlDataType(data_type));
+    MLUCnnlTensorDesc out_desc(*out, CNNL_LAYOUT_ARRAY, ToCnnlDataType<T>());
 
     MLUCnnl::Fill(ctx, CNNL_POINTER_MODE_HOST, &value_t, out_desc.get(),
                   GetBasePtr(out));
@@ -70,5 +67,6 @@ namespace ops = paddle::operators;
 namespace plat = paddle::platform;
 
 REGISTER_OP_MLU_KERNEL(fill_any_like, ops::FillAnyLikeMLUKernel<int>,
+                       ops::FillAnyLikeMLUKernel<int64_t>,
                        ops::FillAnyLikeMLUKernel<float>,
                        ops::FillAnyLikeMLUKernel<plat::float16>);
