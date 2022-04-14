@@ -57,22 +57,21 @@ class TestElementwiseDiv(OpTest):
 
     def test_check_grad_normal(self):
         self.check_grad_with_place(
-            self.place,
-            ['X', 'Y'],
-            'Out',
-            max_relative_error=0.007, )
+            self.place, ['X', 'Y'], 'Out', max_relative_error=0.05)
 
     def test_check_grad_ingore_x(self):
         self.check_grad_with_place(
-            self.place,
-            ['Y'],
+            self.place, ['Y'],
             'Out',
-            max_relative_error=0.007,
-            no_grad_set=set("X"), )
+            max_relative_error=0.05,
+            no_grad_set=set("X"))
 
     def test_check_grad_ingore_y(self):
         self.check_grad_with_place(
-            self.place, ['X'], 'Out', no_grad_set=set("Y"))
+            self.place, ['X'],
+            'Out',
+            max_relative_error=0.05,
+            no_grad_set=set("Y"))
 
 
 class TestElementwiseDivFp16(OpTest):
