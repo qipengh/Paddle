@@ -194,6 +194,10 @@ PreparedOp PrepareImpl(
 
 #endif
 
+  if (is_in_black_list(op.Type(), false/*is_amp*/)) {
+    expected_kernel_key.place_ = platform::CPUPlace();
+  }
+
   bool has_phi_kernel = false;
 
   const auto* arg_map_fn = phi_op_utils_map.GetArgumentMappingFn(op.Type());

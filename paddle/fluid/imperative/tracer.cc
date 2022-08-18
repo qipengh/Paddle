@@ -220,6 +220,11 @@ void Tracer::TraceOpImpl(const std::string& type,
       attr_checker == nullptr ? empty_attrs_map
                               : attr_checker->GetDefaultAttrMap();
 
+  auto amp_level_bck = amp_level_;
+  if (is_in_black_list(type, true/*is_amp*/)) {
+    amp_level_ = AmpLevel::O0;
+  }
+
   NameVarMap<VarType> new_ins = ins;
   if (amp_level_ == AmpLevel::O1) {
     if (amp_dtype_ == phi::DataType::FLOAT16) {
@@ -243,6 +248,10 @@ void Tracer::TraceOpImpl(const std::string& type,
       VLOG(5) << "BFloat16 Auto Mixed Precision O2 run operator: " << type;
       new_ins = CastPureBf16Inputs<VarType>(type, ins);
     }
+  }
+
+  if (is_in_black_list(type, true/*is_amp*/)) {
+    amp_level_ = amp_level_bck;
   }
 
   try {
