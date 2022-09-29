@@ -54,6 +54,65 @@ class UniqueNameGenerator {
   std::string prefix_;
 };
 
+/* ----------------------- black_list_cpu   black_list_gpu ---------------------------*/
+static void tokenize(const std::string& ops,
+                     char delim,
+                     std::unordered_set<std::string>* op_set) {
+  std::string::size_type beg = 0;
+  for (uint64_t end = 0; (end = ops.find(delim, end)) != std::string::npos;
+       ++end) {
+    op_set->insert(ops.substr(beg, end - beg));
+    beg = end + 1;
+  }
+
+  op_set->insert(ops.substr(beg));
+}
+
+static bool is_in_black_list(const std::string& op_name, const bool is_amp) {
+  static bool inited = false;
+  static std::unordered_set<std::string> black_list_to_cpu;
+  static std::unordered_set<std::string> black_list_for_amp;
+  static std::mutex s_mtx;
+  if (!inited) {
+    std::lock_guard<std::mutex> guard(s_mtx);
+    if (!inited) {
+      if (std::getenv("BLACK_LIST_TO_CPU") != nullptr) {
+        std::string ops(std::getenv("BLACK_LIST_TO_CPU"));
+        tokenize(ops, ',', &black_list_to_cpu);
+      }
+      VLOG(0) << " Black List to cpu: ";
+      for (auto iter = black_list_to_cpu.begin(); iter != black_list_to_cpu.end();
+           ++iter) {
+        VLOG(0) << *iter << " ";
+      }
+
+      if (std::getenv("BLACK_LIST_AMP") != nullptr) {
+        std::string ops(std::getenv("BLACK_LIST_AMP"));
+        tokenize(ops, ',', &black_list_for_amp);
+      }
+      VLOG(0) << " Black List for amp: ";
+      for (auto iter = black_list_for_amp.begin(); iter != black_list_for_amp.end();
+           ++iter) {
+        VLOG(0) << *iter << " ";
+      }
+
+      inited = true;
+    }
+  }
+  if (is_amp) {
+    if (black_list_for_amp.find(op_name) != black_list_for_amp.end()) {
+      return true;
+    }
+  } else {
+    if (black_list_to_cpu.find(op_name) != black_list_to_cpu.end()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/* ----------------------- black_list end ---------------------------*/
+
 class Tracer {
   DISABLE_COPY_AND_ASSIGN(Tracer);
 
